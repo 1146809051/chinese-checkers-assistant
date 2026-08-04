@@ -1,0 +1,19 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: system-ui, sans-serif; }
+#app { width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
+#status-bar { height: 36px; background: rgba(0,0,0,0.8); color: #eee; display: flex; align-items: center; padding: 0 12px; gap: 12px; font-size: 13px; z-index: 10; flex-shrink: 0; }
+#camera-container { flex: 1; position: relative; overflow: hidden; background: #111; }
+#video { width: 100%; height: 100%; object-fit: cover; }
+#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+#bottom-bar { height: 80px; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; z-index: 10; }
+#color-chips { display: flex; gap: 12px; }
+.color-chip { width: 28px; height: 28px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; }
+.color-chip.selected { border-color: #ffd54a; }
+#btn-plan { background: #ffd54a; color: #222; border: none; border-radius: 20px; padding: 8px 32px; font-size: 15px; font-weight: bold; cursor: pointer; }
+#btn-plan:disabled { opacity: 0.5; cursor: not-allowed; }
+#correction-modal { position: absolute; bottom: 80px; left: 10%; width: 80%; background: rgba(34,34,34,0.95); border-radius: 12px; padding: 16px; z-index: 20; }
+#correction-options { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 12px 0; }
+.correction-opt { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
+.correction-opt.active { border-color: #ffd54a; box-shadow: 0 0 8px #ffd54a; }
+#btn-correction-done { width: 100%; background: #ffd54a; border: none; border-radius: 16px; padding: 8px; font-weight: bold; }
+#camera-denied { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #eee; font-size: 16px; background: rgba(0,0,0,0.9); z-index: 30; }

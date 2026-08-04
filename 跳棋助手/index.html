@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>跳棋助手</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部状态栏 -->
+    <header id="status-bar">
+      <span id="track-status">等待启动</span>
+      <span id="my-color"></span>
+      <button id="btn-reanchor" style="display:none">重新锚定</button>
+      <button id="btn-flip-camera">切换摄像头</button>
+    </header>
+
+    <!-- 摄像头预览 + 叠加层 -->
+    <div id="camera-container">
+      <video id="video" autoplay playsinline></video>
+      <canvas id="overlay"></canvas>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <footer id="bottom-bar">
+      <div id="color-chips"></div>
+      <button id="btn-plan" disabled>规划路线</button>
+    </footer>
+
+    <!-- 校正模式弹窗 -->
+    <div id="correction-modal" style="display:none">
+      <div id="correction-title">识别不确定的棋子</div>
+      <div id="correction-options"></div>
+      <button id="btn-correction-done">确认</button>
+    </div>
+
+    <!-- 摄像头权限提示 -->
+    <div id="camera-denied" style="display:none">
+      <p>需要摄像头权限才能使用</p>
+      <p>请在浏览器设置中允许访问摄像头</p>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
