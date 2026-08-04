@@ -21,3 +21,36 @@ for (const n of getNeighbors(0)) {
 }
 
 console.log('规则引擎基础测试通过');
+
+// === Task 2B: 合法走法生成与连跳 ===
+
+import { generateMoves, getJumps, isAdjacent } from '../js/rules.js';
+
+// 相邻判断
+assert.ok(isAdjacent(0, 1), '位置0和1应相邻');
+
+// 单步走法：棋子在位置A，相邻位置B为空 → 生成走法
+const board1 = new Array(121).fill(0); // 0=空
+board1[50] = 1; // 玩家1的子在位置50
+const moves1 = generateMoves(board1, 1);
+assert.ok(moves1.length > 0, '应有合法走法');
+assert.equal(moves1[0].from, 50, '起点应为50');
+assert.equal(moves1[0].path.length, 2, '单步走法路径长度应为2（起点+终点）');
+
+// 连跳：A有子，B有子，C空 → 可从A跳到C
+const board2 = new Array(121).fill(0);
+const posA = 50;
+const neighborsA = getNeighbors(posA);
+if (neighborsA.length >= 1) {
+  const posB = neighborsA[0];
+  const neighborsB = getNeighbors(posB);
+  const posC = neighborsB.find(n => n !== posA && board2[n] === 0);
+  if (posC !== undefined) {
+    board2[posA] = 1;
+    board2[posB] = 2;
+    const jumps = getJumps(board2, 1, posA);
+    assert.ok(jumps.some(j => j.to === posC), `应能从${posA}跳到${posC}`);
+  }
+}
+
+console.log('走法生成测试通过');

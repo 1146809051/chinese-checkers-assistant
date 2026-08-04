@@ -54,3 +54,50 @@ export function getNeighbors(pos) {
   }
   return result;
 }
+
+export function isAdjacent(a, b) {
+  return getNeighbors(a).includes(b);
+}
+
+export function generateMoves(board, player) {
+  const moves = [];
+  for (let pos = 0; pos < BOARD_SIZE; pos++) {
+    if (board[pos] === player) {
+      for (const nb of getNeighbors(pos)) {
+        if (board[nb] === 0) {
+          moves.push({ from: pos, to: nb, path: [pos, nb] });
+        }
+      }
+      const jumps = getJumps(board, player, pos);
+      moves.push(...jumps);
+    }
+  }
+  return moves;
+}
+
+export function getJumps(board, player, from, visited = new Set()) {
+  const jumps = [];
+  visited.add(from);
+  for (const nb of getNeighbors(from)) {
+    if (board[nb] !== 0 && !visited.has(nb)) {
+      const { row: r1, col: c1 } = BOARD_POSITIONS[from];
+      const { row: r2, col: c2 } = BOARD_POSITIONS[nb];
+      const dr = r2 - r1, dc = c2 - c1;
+      const nr = r2 + dr, nc = c2 + dc;
+      const landing = POS_TO_INDEX.get(`${nr},${nc}`);
+      if (landing !== undefined && board[landing] === 0) {
+        const newBoard = [...board];
+        newBoard[landing] = player;
+        const subJumps = getJumps(newBoard, player, landing, new Set(visited));
+        if (subJumps.length > 0) {
+          for (const sj of subJumps) {
+            jumps.push({ from, to: sj.to, path: [from, landing, ...sj.path.slice(1)] });
+          }
+        } else {
+          jumps.push({ from, to: landing, path: [from, landing] });
+        }
+      }
+    }
+  }
+  return jumps;
+}
