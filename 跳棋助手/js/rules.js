@@ -2,27 +2,47 @@
 export const BOARD_SIZE = 121;
 export const PLAYER_COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
 
-// 棋盘位置：星形棋盘的121个位置的 (row, col) 坐标
-// 星形由两个三角形叠加：上三角 行0-6，下三角 行6-12
 const BOARD_POSITIONS = [];
 const POS_TO_INDEX = new Map();
 
-function inStarShape(r, c) {
-  if (r >= 0 && r <= 6 && c >= 6 - r && c <= 6 + r) return true;
-  if (r >= 6 && r <= 12 && c >= r - 6 && c <= 18 - r) return true;
-  return false;
-}
-
 (function initBoard() {
-  let idx = 0;
-  for (let r = 0; r <= 12; r++) {
-    for (let c = 0; c <= 12; c++) {
-      if (inStarShape(r, c)) {
-        BOARD_POSITIONS.push({ row: r, col: c });
-        POS_TO_INDEX.set(`${r},${c}`, idx);
-        idx++;
+  // Generate all 121 positions of a Chinese Checkers hexagram board
+  // Using cube coordinates (q, r, s) where q+r+s=0
+  const positions = [];
+
+  for (let q = -8; q <= 8; q++) {
+    for (let r = -8; r <= 8; r++) {
+      const s = -q - r;
+      if (Math.abs(s) > 8) continue;
+
+      const maxCoord = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
+
+      if (maxCoord <= 4) {
+        // Center hexagon: 61 positions
+        positions.push({ q, r, s });
+      } else if (maxCoord <= 8) {
+        // 6 triangular arms: exactly one coordinate > 4 in absolute value
+        const over4 = [q, r, s].filter(c => Math.abs(c) > 4);
+        if (over4.length === 1) {
+          positions.push({ q, r, s });
+        }
       }
     }
+  }
+
+  // Convert cube to offset coordinates (odd-r layout)
+  for (const pos of positions) {
+    const row = pos.r + 8;
+    const col = pos.q + 8 + ((pos.r + 8) & 1 ? 1 : 0);
+    BOARD_POSITIONS.push({ row, col, q: pos.q, r: pos.r, s: pos.s });
+  }
+
+  // Sort by row then col for consistent ordering
+  BOARD_POSITIONS.sort((a, b) => a.row - b.row || a.col - b.col);
+
+  // Build index map
+  for (let i = 0; i < BOARD_POSITIONS.length; i++) {
+    POS_TO_INDEX.set(`${BOARD_POSITIONS[i].row},${BOARD_POSITIONS[i].col}`, i);
   }
 })();
 
