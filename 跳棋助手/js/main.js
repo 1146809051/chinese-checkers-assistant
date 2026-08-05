@@ -1,4 +1,5 @@
 // js/main.js
+import { generateVirtualBoard } from '../demo/virtual-board.js';
 import { startCamera, flipCamera, captureFrame } from './camera.js';
 import { detectBoard, anchorManually, isAnchored, clearAnchor, boardToScreen } from './board.js';
 import { recognizeMarbles, findUncertain, getDetectedColors } from './marbles.js';
@@ -40,6 +41,27 @@ function setState(s, msg) {
 // 初始化
 async function init() {
   initOverlay(overlayCanvas);
+
+  // 演示模式：使用虚拟棋盘
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('demo') === '1') {
+    const virtualCanvas = generateVirtualBoard(myColor || 'green');
+    video.style.display = 'none';
+    document.getElementById('camera-denied').style.display = 'none';
+
+    const demoContainer = document.createElement('div');
+    demoContainer.id = 'demo-container';
+    demoContainer.appendChild(virtualCanvas);
+    video.parentNode.insertBefore(demoContainer, video);
+
+    overlayCanvas.width = virtualCanvas.width;
+    overlayCanvas.height = virtualCanvas.height;
+    setState(State.ANCHORED, '演示模式 — 虚拟棋盘已加载');
+    isRunning = true;
+    requestAnimationFrame(tick);
+    return;
+  }
+
   const ok = await startCamera(video);
   if (!ok) {
     document.getElementById('camera-denied').style.display = 'flex';
