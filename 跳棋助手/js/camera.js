@@ -8,16 +8,6 @@ export async function startCamera(videoEl) {
       video: { facingMode },
       audio: false,
     });
-
-    // 尝试关闭数字变焦
-    const track = stream.getVideoTracks()[0];
-    const capabilities = track.getCapabilities?.();
-    if (capabilities?.zoom) {
-      try {
-        await track.applyConstraints({ advanced: [{ zoom: 1 }] });
-      } catch (e) { /* 不支持zoom约束 */ }
-    }
-
     videoEl.srcObject = stream;
     await videoEl.play();
     return true;

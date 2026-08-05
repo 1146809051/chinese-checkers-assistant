@@ -1,5 +1,4 @@
 // js/main.js
-import { generateVirtualBoard } from '../demo/virtual-board.js';
 import { startCamera, flipCamera, captureFrame } from './camera.js';
 import { detectBoard, anchorManually, isAnchored, clearAnchor, boardToScreen } from './board.js';
 import { recognizeMarbles, findUncertain, getDetectedColors } from './marbles.js';
@@ -46,6 +45,7 @@ async function init() {
   // 演示模式：使用虚拟棋盘
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('demo') === '1') {
+    const { generateVirtualBoard } = await import('../demo/virtual-board.js');
     const virtualCanvas = generateVirtualBoard(myColor || 'green');
     video.style.display = 'none';
     document.getElementById('camera-denied').style.display = 'none';
