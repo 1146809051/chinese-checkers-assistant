@@ -38,3 +38,10 @@ export function captureFrame(videoEl, canvas) {
   ctx.drawImage(videoEl, 0, 0);
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
+
+export function setResolution(videoEl, width, height) {
+  const track = videoEl.srcObject?.getVideoTracks()[0];
+  if (track) {
+    track.applyConstraints({ width: { ideal: width }, height: { ideal: height } });
+  }
+}

@@ -22,7 +22,8 @@ let marbleResults = null;
 let uncertainList = [];
 let lastPath = null;
 let isRunning = false;
-let trackingLostCount = 0;
+let framesSinceLastDetection = 0;
+const TRACKING_LOST_THRESHOLD = 30;
 
 const State = {
   IDLE: 'idle',
@@ -84,11 +85,26 @@ function tick() {
     if (detectBoard(frame)) {
       setState(State.ANCHORED, '棋盘已锁定');
       btnReanchor.style.display = 'inline';
-      trackingLostCount = 0;
+      framesSinceLastDetection = 0;
     }
   } else if (state === State.ANCHORED && myColor) {
     // 识别棋子
     const frame = captureFrame(video, overlayCanvas);
+
+    // 追踪丢失检测
+    if (detectBoard(frame)) {
+      framesSinceLastDetection = 0;
+    } else {
+      framesSinceLastDetection++;
+    }
+
+    if (framesSinceLastDetection > TRACKING_LOST_THRESHOLD) {
+      setState(State.ANCHORED, '追踪丢失，请重新对准');
+      clearOverlay();
+      requestAnimationFrame(tick);
+      return;
+    }
+
     marbleResults = recognizeMarbles(frame, isAnchored());
     uncertainList = findUncertain(marbleResults);
 
@@ -102,8 +118,6 @@ function tick() {
     } else {
       btnPlan.disabled = false;
     }
-
-    trackingLostCount = 0;
   } else if (state === State.CORRECTION) {
     // 等待用户校正
   }
