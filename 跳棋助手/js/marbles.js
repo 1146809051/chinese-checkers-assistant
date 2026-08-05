@@ -4,15 +4,15 @@ import { boardToScreen } from './board.js';
 
 // 颜色范围（HSV）
 const COLOR_RANGES = {
-  red:    { low: [0, 100, 100],   high: [10, 255, 255] },
-  orange: { low: [10, 100, 100],  high: [25, 255, 255] },
-  yellow: { low: [25, 100, 100],  high: [35, 255, 255] },
-  green:  { low: [35, 100, 100],  high: [85, 255, 255] },
-  blue:   { low: [100, 100, 100], high: [130, 255, 255] },
-  purple: { low: [130, 100, 100], high: [170, 255, 255] },
+  red:    { low: [0, 70, 80],     high: [15, 255, 255] },
+  orange: { low: [10, 70, 80],    high: [30, 255, 255] },
+  yellow: { low: [20, 70, 80],    high: [40, 255, 255] },
+  green:  { low: [30, 70, 80],    high: [100, 255, 255] },
+  blue:   { low: [85, 70, 80],    high: [140, 255, 255] },
+  purple: { low: [130, 50, 80],   high: [175, 255, 255] },
 };
 
-const SAMPLE_RADIUS = 8;
+const SAMPLE_RADIUS = 12;
 
 // 识别121个位置的棋子颜色
 // 返回: [{ pos, color, confidence }, ...]
@@ -52,7 +52,7 @@ export function recognizeMarbles(imageData, homography) {
           }
         }
         const conf = total > 0 ? count / total : 0;
-        if (conf > bestConfidence && conf > 0.3) {
+        if (conf > bestConfidence && conf > 0.2) {
           bestConfidence = conf;
           bestColor = colorName;
         }
@@ -61,6 +61,9 @@ export function recognizeMarbles(imageData, homography) {
     }
 
     mat.delete(); hsv.delete();
+
+    const sampled = results.filter(r => r.color);
+    console.log(`识别结果: ${sampled.length}/${BOARD_SIZE} 有颜色`, sampled.slice(0, 5));
   } catch (e) {
     console.error('棋子识别失败:', e);
   }
