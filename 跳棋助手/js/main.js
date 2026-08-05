@@ -82,6 +82,7 @@ function tick() {
   if (state === State.CAMERA_OK) {
     // 尝试自动检测棋盘
     const frame = captureFrame(video, overlayCanvas);
+    if (!frame) { requestAnimationFrame(tick); return; }
     if (detectBoard(frame)) {
       setState(State.ANCHORED, '棋盘已锁定，请选择颜色');
       btnReanchor.style.display = 'inline';
@@ -97,6 +98,7 @@ function tick() {
   } else if (state === State.ANCHORED) {
     // 识别棋子
     const frame = captureFrame(video, overlayCanvas);
+    if (!frame) { requestAnimationFrame(tick); return; }
 
     // 追踪丢失检测
     if (detectBoard(frame)) {
@@ -180,9 +182,20 @@ btnPlan.onclick = () => {
 
 // 切换摄像头
 btnFlip.onclick = async () => {
+  clearAnchor();
+  clearOverlay();
+  marbleResults = null;
+  uncertainList = [];
+  colorChipsEl.innerHTML = '';
+  myColorEl.textContent = '';
+  myColor = null;
+  btnPlan.disabled = true;
+  btnReanchor.style.display = 'none';
+  setState(State.CAMERA_OK, '切换摄像头中...');
   await flipCamera(video);
   overlayCanvas.width = video.videoWidth;
   overlayCanvas.height = video.videoHeight;
+  setState(State.CAMERA_OK, '摄像头就绪，对准棋盘');
 };
 
 // 重新锚定

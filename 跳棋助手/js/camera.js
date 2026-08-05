@@ -4,10 +4,13 @@ let facingMode = 'environment'; // 默认后置摄像头
 
 export async function startCamera(videoEl) {
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode },
-      audio: false,
-    });
+    const constraints = { audio: false };
+    if (facingMode === 'environment') {
+      constraints.video = { facingMode: 'environment', width: { max: 1280 }, height: { max: 720 } };
+    } else {
+      constraints.video = { facingMode: 'user' };
+    }
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
     videoEl.srcObject = stream;
     await videoEl.play();
     return true;
@@ -28,10 +31,26 @@ export function stopCamera(videoEl) {
 export async function flipCamera(videoEl) {
   facingMode = facingMode === 'environment' ? 'user' : 'environment';
   stopCamera(videoEl);
-  return startCamera(videoEl);
+  const ok = await startCamera(videoEl);
+  if (!ok) return false;
+  await waitForVideoReady(videoEl);
+  return true;
+}
+
+function waitForVideoReady(videoEl) {
+  return new Promise(resolve => {
+    if (videoEl.videoWidth > 0) { resolve(); return; }
+    const check = () => {
+      if (videoEl.videoWidth > 0) { resolve(); return; }
+      requestAnimationFrame(check);
+    };
+    videoEl.onloadedmetadata = () => { videoEl.play().then(check); };
+    check();
+  });
 }
 
 export function captureFrame(videoEl, canvas) {
+  if (!videoEl.videoWidth || !videoEl.videoHeight) return null;
   const ctx = canvas.getContext('2d');
   canvas.width = videoEl.videoWidth;
   canvas.height = videoEl.videoHeight;
