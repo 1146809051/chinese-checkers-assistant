@@ -92,8 +92,8 @@ export function trackFrame(imageData) {
 export function boardToScreen(pos) {
   if (!anchorHomography) return null;
   const { row, col } = BOARD_POSITIONS[pos];
-  const bx = (col / 12) * BOARD_PX_WIDTH;
-  const by = (row / 12) * BOARD_PX_HEIGHT;
+  const bx = (col / 16) * BOARD_PX_WIDTH;
+  const by = (row / 16) * BOARD_PX_HEIGHT;
   try {
     const src = cv.matFromArray(3, 1, cv.CV_64FC1, [bx, by, 1]);
     const result = new cv.Mat();
