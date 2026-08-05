@@ -83,11 +83,18 @@ function tick() {
     // 尝试自动检测棋盘
     const frame = captureFrame(video, overlayCanvas);
     if (detectBoard(frame)) {
-      setState(State.ANCHORED, '棋盘已锁定');
+      setState(State.ANCHORED, '棋盘已锁定，请选择颜色');
       btnReanchor.style.display = 'inline';
       framesSinceLastDetection = 0;
+
+      // 识别棋子并显示颜色选择
+      marbleResults = recognizeMarbles(frame, isAnchored());
+      const colors = getDetectedColors(marbleResults);
+      if (colors.length > 0) {
+        renderColorChips(colors);
+      }
     }
-  } else if (state === State.ANCHORED && myColor) {
+  } else if (state === State.ANCHORED) {
     // 识别棋子
     const frame = captureFrame(video, overlayCanvas);
 
@@ -115,7 +122,7 @@ function tick() {
     if (uncertainList.length > 0) {
       drawUncertainPositions(uncertainList);
       setState(State.CORRECTION, `有 ${uncertainList.length} 颗识别不确定`);
-    } else {
+    } else if (myColor) {
       btnPlan.disabled = false;
     }
   } else if (state === State.CORRECTION) {

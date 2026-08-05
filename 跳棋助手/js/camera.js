@@ -5,7 +5,7 @@ let facingMode = 'environment'; // 默认后置摄像头
 export async function startCamera(videoEl) {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+      video: { facingMode },
       audio: false,
     });
     videoEl.srcObject = stream;
