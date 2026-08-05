@@ -18,8 +18,11 @@
 
     <!-- 摄像头预览 + 叠加层 -->
     <div id="camera-container">
-      <video id="video" autoplay playsinline></video>
-      <canvas id="overlay"></canvas>
+      <div id="zoom-layer">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="overlay"></canvas>
+      </div>
+      <div id="zoom-hint">双指缩放调整画面</div>
     </div>
 
     <!-- 底部操作栏 -->

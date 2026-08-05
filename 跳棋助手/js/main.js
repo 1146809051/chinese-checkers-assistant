@@ -267,3 +267,47 @@ init().catch(e => {
   console.error('init失败:', e);
   statusBar.textContent = '启动失败: ' + e.message;
 });
+
+// === 双指缩放 ===
+(function initPinchZoom() {
+  const container = document.getElementById('camera-container');
+  const zoomLayer = document.getElementById('zoom-layer');
+  const hint = document.getElementById('zoom-hint');
+  let scale = 1;
+  let initialDist = 0;
+  let initialScale = 1;
+
+  function getDist(t) {
+    const dx = t[0].clientX - t[1].clientX;
+    const dy = t[0].clientY - t[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function applyZoom() {
+    zoomLayer.style.transform = `scale(${scale})`;
+  }
+
+  container.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      initialDist = getDist(e.touches);
+      initialScale = scale;
+    }
+  }, { passive: false });
+
+  container.addEventListener('touchmove', e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dist = getDist(e.touches);
+      scale = Math.max(0.3, Math.min(3, initialScale * (dist / initialDist)));
+      applyZoom();
+      if (hint) hint.style.opacity = '0';
+    }
+  }, { passive: false });
+
+  container.addEventListener('touchend', e => {
+    if (e.touches.length < 2) {
+      initialDist = 0;
+    }
+  });
+})();
