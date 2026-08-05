@@ -1,0 +1,33 @@
+# oh-my-jyfcoder 项目配置
+# 填写以下信息后重启 OpenCode 即可激活插件
+# 如果不是 JYFramework 低代码项目，可以忽略此文件
+
+# project:
+#   name: "项目名称"
+#   env: "dev"
+
+# platform_api:
+#   base_url: "http://平台后端地址:端口/"
+#   account: "管理员账号"
+#   password: "管理员密码"
+
+# database:
+#   # 推荐：直接粘贴平台数据源或 Java 应用现成的 JDBC URL，无需理解方言差异
+#   url: "jdbc:mysql://数据库地址:3306/库名"
+#   # 其它方言示例（替换上面 url 即可）：
+#   #   jdbc:postgresql://host:5432/dbname
+#   #   jdbc:sqlserver://host:1433;databaseName=dbname
+#   #   jdbc:oracle:thin:@//host:1521/SERVICE_NAME    （Oracle service name 形式）
+#   #   jdbc:oracle:thin:@host:1521:SID                （Oracle SID 形式）
+#   username: "用户名"
+#   password: "密码"
+
+# sip:
+#   # SIP 平台 Web/API 根地址
+#   base_url: "http://中间件地址:8081/"
+#   account: "管理员账号"
+#   password: "管理员密码"
+#   # database:                          # 可选：SIP 数据库直连
+#   #   url: "jdbc:mysql://主机:3306/库名"
+#   #   username: "数据库用户"
+#   #   password: "数据库密码"

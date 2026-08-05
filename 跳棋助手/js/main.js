@@ -244,4 +244,13 @@ document.getElementById('btn-correction-done').onclick = () => {
 document.addEventListener('opencv-ready', () => {
   console.log('OpenCV ready');
 });
-init();
+
+window.onerror = function(msg, url, line, col, error) {
+  statusBar.textContent = 'JS错误: ' + msg;
+  console.error('全局错误:', msg, url, line, col, error);
+};
+
+init().catch(e => {
+  console.error('init失败:', e);
+  statusBar.textContent = '启动失败: ' + e.message;
+});
