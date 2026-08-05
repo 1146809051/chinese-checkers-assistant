@@ -42,6 +42,12 @@
     </div>
   </div>
 
+  <script async src="https://docs.opencv.org/4.x/opencv.js" onload="onOpenCvReady()"></script>
+  <script>
+    function onOpenCvReady() {
+      document.dispatchEvent(new Event('opencv-ready'));
+    }
+  </script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
